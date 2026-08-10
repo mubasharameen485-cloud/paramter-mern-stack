@@ -1,24 +1,24 @@
 import axios from 'axios';
 
-const API = axios.create({
-  baseURL: 'http://localhost:5000/api',
-});
+const BASE_URL = 'http://localhost:5000/api/products';
 
-// Ye function har request se pehle chalega aur Token attach karega
-API.interceptors.request.use((req) => {
-  const token = localStorage.getItem('token');
-  if (token) {
-    req.headers.Authorization = `Bearer ${token}`;
-  }
-  return req;
-});
+// 1. QUERY PARAMETER WALI API (?)
+export const fetchProducts = async ({ category, sort, page, limit }) => {
+  const params = new URLSearchParams();
+  
+  if (category) params.append('category', category);
+  if (sort) params.append('sort', sort);
+  if (page) params.append('page', page);
+  if (limit) params.append('limit', limit); // Default items per page
 
-export const loginUser = (data) => API.post('/auth/login', data);
-export const signupUser = (data) => API.post('/auth/signup', data);
+  // Request aisi jayegi: /api/products?category=Electronics&sort=-price&page=1
+  const response = await axios.get(`${BASE_URL}?${params.toString()}`);
+  return response.data; // Isme data, totalPages, currentPage sab aayega
+};
 
-// Protected Routes
-export const fetchProfile = () => API.get('/auth/profile');
-export const fetchManagerStats = () => API.get('/auth/manager-data');
-export const fetchAdminDashboard = () => API.get('/auth/admin-dashboard');
-
-export default API;
+// 2. PATH PARAMETER WALI API (:)
+export const fetchSingleProduct = async (id) => {
+  // Request aisi jayegi: /api/products/64b5f8e3f9...
+  const response = await axios.get(`${BASE_URL}/${id}`);
+  return response.data.data;
+};

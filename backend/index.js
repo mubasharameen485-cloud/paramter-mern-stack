@@ -1,7 +1,7 @@
 import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-import productRoutes from "./route.js"; // .js extension zaroori hai ES Modules me
+import productRoutes from "./paramter/route.js"; // .js extension zaroori hai ES Modules me
 
 dotenv.config();
 const app = express();
